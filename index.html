@@ -14,7 +14,7 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background: #000;
+      background: #000; /* this is fine; the canvas will now be transparent */
     }
   </style>
 </head>
@@ -22,15 +22,15 @@
   <a-scene
     embedded
     vr-mode-ui="enabled: false"
-    renderer="logarithmicDepthBuffer: true; antialias: true;"
+    renderer="alpha: true; antialias: true; logarithmicDepthBuffer: true;"
     arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
   >
-    <!-- Marker MUST match your file name exactly -->
+    <!-- Marker must match your .patt file name -->
     <a-marker
       type="pattern"
       url="freebass-logo.patt"
     >
-      <!-- Simple portal: 2 rings + core -->
+      <!-- Portal entity -->
       <a-entity position="0 0 0">
 
         <!-- Outer ring -->
@@ -55,7 +55,7 @@
           material="color: #050510; emissive: #11ffee; emissiveIntensity: 0.9;"
         ></a-sphere>
 
-        <!-- Slow spin for everything -->
+        <!-- Slow spin animation -->
         <a-animation
           attribute="rotation"
           dur="6000"
@@ -67,6 +67,7 @@
       </a-entity>
     </a-marker>
 
+    <!-- Camera -->
     <a-entity camera></a-entity>
   </a-scene>
 </body>
