@@ -2,10 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Free-Bass Reality Gate 01</title>
+    <title>Free-Bass Reality Gate 01 – Wormhole</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 
-    <!-- A-Frame + AR.js (known working combo) -->
+    <!-- A-Frame + AR.js (working combo) -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.3.2/aframe/build/aframe-ar.js"></script>
 
@@ -25,74 +25,128 @@
       renderer="logarithmicDepthBuffer: true; antialias: true"
       arjs="sourceType: webcam; debugUIEnabled: false;"
     >
-      <!-- Marker: your trained Free-Bass pattern -->
+      <!-- Marker: your Free-Bass pattern file -->
+      <!-- If your .patt file has a different name, change freebass-logo.patt below -->
       <a-marker
         type="pattern"
         url="freebass-logo.patt"
         id="portalMarker"
         smooth="true"
-        smoothCount="10"
+        smoothCount="12"
         smoothTolerance="0.01"
         smoothThreshold="5"
       >
-        <!-- PORTAL ROOT -->
+        <!-- WORMHOLE ROOT -->
         <a-entity
           id="portalRoot"
-          position="0 0 0"
           class="clickable"
+          position="0 0 0"
+          scale="0.7 0.7 0.7"
           sound="src: url(portal sound.mp3); on: click"
-          animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"
-          animation__idlePulse="property: scale; dir: alternate; dur: 1500; easing: easeInOutSine; to: 1.05 1.05 1.05; loop: true"
-          animation__tapZoom="property: scale; startEvents: click; from: 1 1 1; to: 4.5 4.5 4.5; dur: 900; dir: alternate; easing: easeInQuad"
+          animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 9000; easing: linear"
+          animation__wobble="
+            property: rotation;
+            dir: alternate;
+            from: -5 0 0;
+            to: 5 20 0;
+            loop: true;
+            dur: 3000;
+            easing: easeInOutSine"
+          animation__tapZoom="
+            property: scale;
+            startEvents: click;
+            from: 0.7 0.7 0.7;
+            to: 2.8 2.8 2.8;
+            dir: alternate;
+            dur: 900;
+            easing: easeInQuad"
         >
-          <!-- Outer neon ring -->
+          <!-- Outer cyan wormhole ring (wide) -->
           <a-torus
-            radius="0.75"
+            radius="0.65"
             radius-tubular="0.08"
             rotation="90 0 0"
             color="#00eaff"
             material="emissive: #00eaff; emissiveIntensity: 0.9; metalness: 0.3; roughness: 0.2"
           ></a-torus>
 
-          <!-- Middle magenta ring -->
+          <!-- Middle magenta ring (slightly inside) -->
           <a-torus
-            radius="0.55"
+            radius="0.48"
             radius-tubular="0.06"
             rotation="90 0 0"
             color="#ff2ad4"
             material="emissive: #ff2ad4; emissiveIntensity: 0.9; metalness: 0.3; roughness: 0.2"
           ></a-torus>
 
-          <!-- Inner spinning knot -->
+          <!-- Inner “event horizon” disc with grid -->
+          <a-cylinder
+            position="0 0 0"
+            radius="0.40"
+            height="0.02"
+            rotation="90 0 0"
+            color="#02030a"
+            material="metalness: 0.4; roughness: 0.1; opacity: 0.95"
+          >
+            <!-- Neon grid lines -->
+            <a-ring
+              radius-inner="0.25"
+              radius-outer="0.39"
+              rotation="0 0 0"
+              color="#1df0ff"
+              material="emissive: #1df0ff; emissiveIntensity: 0.9; opacity: 0.35"
+              animation="property: rotation; to: 0 0 360; loop: true; dur: 7000; easing: linear"
+            ></a-ring>
+          </a-cylinder>
+
+          <!-- Spiraling energy core inside the wormhole -->
           <a-torus-knot
-            radius="0.25"
-            radius-tubular="0.05"
+            radius="0.22"
+            radius-tubular="0.045"
             color="#ffffff"
-            material="emissive: #ffffff; emissiveIntensity: 0.9; metalness: 0.1; roughness: 0.1"
-            animation="property: rotation; to: 360 360 0; loop: true; dur: 5000; easing: linear"
+            material="emissive: #ffffff; emissiveIntensity: 0.9; metalness: 0.1; roughness: 0.2"
+            animation="property: rotation; to: 360 720 0; loop: true; dur: 6000; easing: linear"
           ></a-torus-knot>
 
-          <!-- Label plane -->
+          <!-- Subtle outward pulse ring (shockwave) -->
+          <a-ring
+            position="0 0 0.01"
+            radius-inner="0.42"
+            radius-outer="0.46"
+            rotation="90 0 0"
+            color="#00eaff"
+            material="emissive: #00eaff; emissiveIntensity: 0.8; opacity: 0.4"
+            animation="
+              property: scale;
+              from: 1 1 1;
+              to: 1.6 1.6 1.6;
+              dir: alternate;
+              loop: true;
+              dur: 1400;
+              easing: easeInOutSine"
+          ></a-ring>
+
+          <!-- Label -->
           <a-plane
-            position="0 -0.65 0"
+            position="0 -0.7 0"
             rotation="-90 0 0"
-            width="0.9"
-            height="0.35"
+            width="1.2"
+            height="0.38"
             color="#000000"
-            material="opacity: 0.8"
+            material="opacity: 0.78"
           >
             <a-text
-              value="TAP GATE TO ENTER"
+              value="FREE-BASS WORMHOLE\nTAP TO ENTER TIMELINE"
               align="center"
-              color="#ff2ad4"
-              width="1.8"
-              position="0 0.02 0.01"
+              color="#00eaff"
+              width="2.2"
+              position="0 0.04 0.01"
             ></a-text>
           </a-plane>
         </a-entity>
       </a-marker>
 
-      <!-- Camera + cursor so taps register on the portal -->
+      <!-- Camera + cursor to detect taps on the portal -->
       <a-entity camera cursor="rayOrigin: mouse"></a-entity>
     </a-scene>
   </body>
