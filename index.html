@@ -1,165 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Free-Bass Reality Gate 01</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<head>
+  <meta charset="utf-8" />
+  <title>Free-Bass Reality Gate 01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
-    <!-- A-Frame + AR.js -->
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.3.2/aframe/build/aframe-ar.js"></script>
-    <!-- Make portal always face the camera -->
-    <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
+  <!-- A-Frame + AR.js -->
+  <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.min.js"></script>
 
-    <style>
-      body {
-        margin: 0;
-        overflow: hidden;
-        background: #000;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
-      }
-      #hint {
-        position: fixed;
-        left: 50%;
-        bottom: 12px;
-        transform: translateX(-50%);
-        color: #00eaff;
-        font-size: 14px;
-        text-shadow: 0 0 6px #000;
-        z-index: 10;
-        text-align: center;
-        padding: 4px 10px;
-        background: rgba(0, 0, 0, 0.5);
-        border-radius: 999px;
-      }
-    </style>
-  </head>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #000;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #0ff;
+    }
 
-  <body>
-    <div id="hint">Point at the Free-Bass marker · Tap the portal</div>
+    #hud {
+      position: fixed;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 5;
+      pointer-events: none;
+    }
 
-    <a-scene
-      embedded
-      vr-mode-ui="enabled: false"
-      renderer="logarithmicDepthBuffer: true; antialias: true"
-      arjs="sourceType: webcam; debugUIEnabled: false;"
+    #status {
+      font-size: 14px;
+      padding: 4px 10px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 999px;
+      margin-bottom: 4px;
+    }
+
+    #hint {
+      font-size: 13px;
+      padding: 4px 10px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 999px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- PORTAL SFX (put portal.mp3 in same folder as index.html) -->
+  <audio id="portal-sfx" src="portal.mp3" preload="auto"></audio>
+
+  <!-- HUD TEXT OVERLAY -->
+  <div id="hud">
+    <div id="status">Searching for Free-Bass Reality Gate…</div>
+    <div id="hint" class="hidden">Aim at the Free-Bass marker. Tap the portal to enter.</div>
+  </div>
+
+  <!-- AR SCENE -->
+  <a-scene
+    embedded
+    vr-mode-ui="enabled: false"
+    renderer="logarithmicDepthBuffer: true; antialias: true;"
+    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+  >
+    <!-- MARKER: update url if your .patt has a different name -->
+    <a-marker
+      id="fb-marker"
+      type="pattern"
+      url="freebass-logo.patt"
+      emitevents="true"
     >
-      <!-- Assets -->
-      <a-assets>
-        <!-- Put your anime-style SFX in this file: portal-sfx.mp3 -->
-        <audio
-          id="portal sound"
-          src="portal sound.mp3"
-          preload="auto"
-        ></audio>
-      </a-assets>
+      <!-- PORTAL GROUP -->
+      <a-entity id="portal" position="0 0 0" scale="0 0 0">
 
-      <!-- Marker using your pattern file -->
-      <a-marker
-        id="portalMarker"
-        type="pattern"
-        url="freebass-logo.patt"
-        smooth="true"
-        smoothCount="10"
-        smoothTolerance="0.01"
-        smoothThreshold="5"
-      >
-        <!-- PORTAL ROOT (always faces camera) -->
-        <a-entity
-          id="portalRoot"
-          class="clickable"
-          position="0 0.5 0"
-          scale="1.6 1.6 1.6"
-          look-at="[camera]"
-        >
-          <!-- Outer cyan ring -->
-          <a-entity
-            geometry="primitive: ring; radiusInner: 0.55; radiusOuter: 0.8; segmentsTheta: 64"
-            material="color: #00eaff; emissive: #00eaff; emissiveIntensity: 0.9; metalness: 0.3; roughness: 0.2"
-            rotation="0 0 0"
-            animation="property: rotation; to: 0 0 360; loop: true; dur: 4500; easing: linear"
-          ></a-entity>
+        <!-- Outer ring -->
+        <a-torus
+          radius="0.6"
+          radius-tubular="0.08"
+          rotation="90 0 0"
+          material="color: #00f5ff; metalness: 0.6; roughness: 0.1"
+        ></a-torus>
 
-          <!-- Inner magenta ring -->
-          <a-entity
-            geometry="primitive: ring; radiusInner: 0.35; radiusOuter: 0.55; segmentsTheta: 64"
-            material="color: #ff2ad4; emissive: #ff2ad4; emissiveIntensity: 0.9; metalness: 0.3; roughness: 0.25"
-            rotation="0 0 0"
-            animation="property: rotation; to: 0 0 -360; loop: true; dur: 3500; easing: linear"
-          ></a-entity>
+        <!-- Inner ring -->
+        <a-torus
+          radius="0.35"
+          radius-tubular="0.06"
+          rotation="90 0 0"
+          material="color: #ff00c8; metalness: 0.7; roughness: 0.15"
+        ></a-torus>
 
-          <!-- Dark portal disc -->
-          <a-entity
-            geometry="primitive: circle; radius: 0.35; segments: 48"
-            material="color: #050510; metalness: 0.5; roughness: 0.2; opacity: 0.98"
-          ></a-entity>
+        <!-- Core sphere -->
+        <a-sphere
+          radius="0.18"
+          material="color: #050510; emissive: #11ffee; emissiveIntensity: 0.7; metalness: 0.3; roughness: 0.4"
+        ></a-sphere>
 
-          <!-- Soft glow halo -->
-          <a-entity
-            geometry="primitive: circle; radius: 0.5; segments: 48"
-            material="color: #88f5ff; emissive: #88f5ff; emissiveIntensity: 0.5; transparent: true; opacity: 0.35"
-          ></a-entity>
+        <!-- Constant slow spin -->
+        <a-animation
+          attribute="rotation"
+          dur="6000"
+          to="0 360 0"
+          easing="linear"
+          repeat="indefinite"
+        ></a-animation>
+      </a-entity>
+    </a-marker>
 
-          <!-- Core orb -->
-          <a-sphere
-            id="portalCore"
-            position="0 0 0.05"
-            radius="0.18"
-            color="#ffffff"
-            material="emissive: #ffffff; emissiveIntensity: 1; transparent: true; opacity: 0.95"
-            animation__pulse="property: scale; from: 1 1 1; to: 1.6 1.6 1.6; dir: alternate; loop: true; dur: 900; easing: easeInOutSine"
-          ></a-sphere>
-        </a-entity>
-      </a-marker>
+    <!-- CAMERA -->
+    <a-entity camera></a-entity>
+  </a-scene>
 
-      <!-- Camera + cursor (touch = click) -->
-      <a-entity
-        id="camera"
-        camera
-        look-controls
-        cursor="rayOrigin: mouse"
-        raycaster="objects: .clickable"
-      ></a-entity>
-    </a-scene>
+  <script>
+    const marker = document.querySelector('#fb-marker');
+    const portal = document.querySelector('#portal');
+    const statusEl = document.querySelector('#status');
+    const hintEl = document.querySelector('#hint');
+    const sfx = document.querySelector('#portal-sfx');
 
-    <script>
-      window.addEventListener("DOMContentLoaded", function () {
-        var portal = document.querySelector("#portalRoot");
-        var audio = document.querySelector("#portal-sfx");
-        var hint = document.querySelector("#hint");
-        var marker = document.querySelector("#portalMarker");
+    let audioPrimed = false;
+    let portalOpened = false;
 
-        if (marker && hint) {
-          marker.addEventListener("markerFound", function () {
-            hint.style.display = "none";
-          });
-          marker.addEventListener("markerLost", function () {
-            hint.style.display = "block";
-          });
-        }
-
-        if (!portal) return;
-
-        // Tap / click portal
-        portal.addEventListener("click", function () {
-          // Play SFX (will work after first user interaction)
-          if (audio) {
-            try {
-              audio.currentTime = 0;
-              audio.play();
-            } catch (e) {
-              console.log("Audio blocked:", e);
-            }
-          }
-
-          // Anime-style zoom in/out
-          portal.setAttribute(
-            "animation__tap",
-            "property: scale; from: 1.6 1.6 1.6; to: 2.3 2.3 2.3; dir: alternate; dur: 600; easing: easeOutCubic"
-          );
+    // Prime audio on first tap anywhere (mobile autoplay rules)
+    document.body.addEventListener(
+      'click',
+      () => {
+        if (audioPrimed) return;
+        sfx.play().then(() => {
+          sfx.pause();
+          sfx.currentTime = 0;
+          audioPrimed = true;
+        }).catch(() => {
+          // ignore – some browsers will block until marker tap
         });
+      },
+      { once: true }
+    );
+
+    // When the marker is found
+    marker.addEventListener('markerFound', () => {
+      statusEl.textContent = 'Free-Bass Reality Gate locked.';
+      hintEl.classList.remove('hidden');
+      portalOpened = false;
+
+      // Pop the portal in with a smooth ease-out
+      portal.setAttribute('scale', '0 0 0');
+      portal.setAttribute('animation__appear', {
+        property: 'scale',
+        from: '0 0 0',
+        to: '0.9 0.9 0.9',
+        dur: 700,
+        easing: 'easeOutBack'
       });
-    </script>
-  </body>
+    });
+
+    // When the marker is lost
+    marker.addEventListener('markerLost', () => {
+      statusEl.textContent = 'Searching for Free-Bass Reality Gate…';
+      hintEl.classList.add('hidden');
+      portal.setAttribute('scale', '0 0 0');
+      portalOpened = false;
+    });
+
+    // Tap portal to "enter"
+    portal.addEventListener('click', async () => {
+      if (portalOpened) return;
+      portalOpened = true;
+
+      hintEl.textContent = 'Timeline shift in progress…';
+
+      // Play SFX (anime-style whoosh you added as portal.mp3)
+      try {
+        sfx.currentTime = 0;
+        await sfx.play();
+      } catch (e) {
+        console.warn('Audio blocked by browser:', e);
+      }
+
+      // Dramatic zoom-in pulse
+      portal.setAttribute('animation__zoom', {
+        property: 'scale',
+        to: '1.6 1.6 1.6',
+        dur: 900,
+        dir: 'alternate',
+        easing: 'easeInOutQuad',
+        loop: 2
+      });
+
+      // After the pulse, hold a slightly larger size
+      setTimeout(() => {
+        portal.setAttribute('scale', '1.2 1.2 1.2');
+        hintEl.textContent = 'Gate stabilized. Move around it to inspect the portal.';
+      }, 1900);
+    });
+  </script>
+</body>
 </html>
