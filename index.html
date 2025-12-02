@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Free-Bass Reality Gate</title>
+    <title>Free-Bass Reality Gate 01</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 
-    <!-- A-Frame core -->
+    <!-- A-Frame + AR.js -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <!-- AR.js for A-Frame (WebAR) -->
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ar-js-org@3.4.3/aframe/build/aframe-ar.js"></script>
 
     <style>
       body {
@@ -17,240 +16,150 @@
         background: #000;
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       }
-
-      #loading {
+      #overlay-text {
         position: fixed;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #00e5ff;
-        background: #000;
-        z-index: 9999;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        color: #27c4ff;
         text-align: center;
-        padding: 1rem;
+        font-size: 1.1rem;
+        padding: 0.75rem 1.25rem;
+        background: rgba(0, 0, 0, 0.65);
+        border-radius: 0.75rem;
+        border: 1px solid rgba(39, 196, 255, 0.6);
+        max-width: 90vw;
+        z-index: 10;
       }
-
-      #tapOverlay {
-        position: fixed;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        background: rgba(0, 0, 0, 0.75);
-        color: #00e5ff;
-        z-index: 9998;
-        text-align: center;
-        padding: 1rem;
-      }
-
-      #tapOverlay button {
-        margin-top: 1rem;
-        padding: 0.7rem 1.4rem;
-        border-radius: 999px;
-        border: 2px solid #ff00c8;
-        background: #00e5ff;
-        color: #000;
-        font-weight: 700;
-        font-size: 1rem;
+      #overlay-text.hidden {
+        display: none;
       }
     </style>
   </head>
 
   <body>
-    <!-- Simple loading text -->
-    <div id="loading">
-      Opening Free-Bass Reality Gate…
-      <br />Move your phone slowly to lock onto the world.
+    <div id="overlay-text">
+      Opening Free-Bass Reality Gate…<br />
+      Move your phone slowly to lock onto the world.
     </div>
 
-    <!-- Tap overlay to satisfy mobile “user interaction” for sound -->
-    <div id="tapOverlay">
-      <div>Tap to energize the portal 🔮</div>
-      <button id="enterBtn">ENTER</button>
-    </div>
-
-    <!-- Portal sound (optional). Put portal-sound.mp3 in same folder. -->
-    <audio id="portalSound" src="freebass_clean.wav" preload="auto"></audio>
-
-        <a-scene
+    <a-scene
       embedded
       vr-mode-ui="enabled: false"
-      renderer="antialias: true; alpha: true"
+      renderer="logarithmicDepthBuffer: true; antialias: true"
       arjs="sourceType: webcam; debugUIEnabled: false;"
     >
-
-      <!-- Marker that the portal is locked to -->
-    <a-marker
-  type="pattern"
-  url="freebass-logo.patt"
-  id="portalMarker"
-  smooth="true"
-  smoothCount="10"
-  smoothTolerance="0.01"
-  smoothThreshold="5"
->
-
-
-
-        <!-- === PORTAL ROOT (marker-relative) === -->
+      <!-- Marker uses your trained pattern file -->
+      <a-marker
+        type="pattern"
+        url="freebass-logo.patt"
+        id="portalMarker"
+        smooth="true"
+        smoothCount="10"
+        smoothTolerance="0.01"
+        smoothThreshold="5"
+      >
+        <!-- PORTAL ROOT: all portal pieces live inside this -->
         <a-entity
-  id="portalRoot"
-  position="0 0 0"
-  sound="src: url(portal sound.mp3.wav); autoplay: false; loop: false"
-  animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"
-  animation__idlePulse="property: scale; dir: alternate; dur: 1500; easing: easeInOutSine; to: 1.05 1.05 1.05; loop: true"
-  animation__enter="property: scale; startEvents: portalEnter; from: 1 1 1; to: 5 5 5; dur: 1500; easing: easeInQuad"
->
-
-
-          <!-- Outer neon tech ring (A) -->
-          <a-torus
-            radius="1.0"
-            radius-tubular="0.06"
-            color="#00e5ff"
-            material="emissive:#00e5ff; emissiveIntensity:0.9; metalness:0.6; roughness:0.1"
-            animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear"
-          ></a-torus>
-
-          <!-- Mid magenta ring (A/B) -->
+          id="portalRoot"
+          position="0 0 0"
+          sound="src: url(portal sound.mp3); autoplay: false; loop: false"
+          animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"
+          animation__idlePulse="property: scale; dir: alternate; dur: 1500; easing: easeInOutSine; to: 1.05 1.05 1.05; loop: true"
+          animation__enter="property: scale; startEvents: portalEnter; from: 1 1 1; to: 4.5 4.5 4.5; dur: 1500; easing: easeInQuad"
+        >
+          <!-- Outer ring -->
           <a-torus
             radius="0.75"
-            radius-tubular="0.05"
-            color="#ff00c8"
-            rotation="0 45 0"
-            material="emissive:#ff00c8; emissiveIntensity:0.9; metalness:0.5; roughness:0.2"
-            animation="property: rotation; to: 0 -360 0; loop: true; dur: 6000; easing: linear"
+            radius-tubular="0.08"
+            rotation="90 0 0"
+            color="#00eaff"
+            material="emissive: #00eaff; emissiveIntensity: 0.9; metalness: 0.3; roughness: 0.2"
           ></a-torus>
 
-          <!-- Inner sacred geometry disc (B) -->
-          <a-circle
-            radius="0.6"
-            color="#050011"
-            material="shader: flat; opacity: 0.9"
+          <!-- Mid ring -->
+          <a-torus
+            radius="0.55"
+            radius-tubular="0.06"
+            rotation="90 0 0"
+            color="#ff2ad4"
+            material="emissive: #ff2ad4; emissiveIntensity: 0.9; metalness: 0.3; roughness: 0.2"
+          ></a-torus>
+
+          <!-- Inner rotating knot -->
+          <a-torus-knot
+            radius="0.25"
+            radius-tubular="0.05"
             rotation="0 0 0"
-          >
-            <a-animation
-              attribute="material.opacity"
-              from="0.4"
-              to="0.95"
-              direction="alternate"
-              dur="1400"
-              repeat="indefinite"
-            ></a-animation>
-          </a-circle>
+            color="#ffffff"
+            material="emissive: #ffffff; emissiveIntensity: 0.9; metalness: 0.1; roughness: 0.1"
+            animation="property: rotation; to: 360 360 0; loop: true; dur: 5000; easing: linear"
+          ></a-torus-knot>
 
-          <!-- Spinning sacred-geo rings -->
-          <a-entity rotation="0 0 0">
-            <a-ring
-              radius-inner="0.3"
-              radius-outer="0.32"
-              color="#00e5ff"
-              position="0 0 0.02"
-              material="emissive:#00e5ff; emissiveIntensity:1.0"
-              animation="property: rotation; to: 0 0 360; loop: true; dur: 5000; easing: linear"
-            ></a-ring>
-            <a-ring
-              radius-inner="0.14"
-              radius-outer="0.16"
-              color="#ff00c8"
-              position="0 0 0.03"
-              material="emissive:#ff00c8; emissiveIntensity:1.0"
-              animation="property: rotation; to: 0 0 -360; loop: true; dur: 3500; easing: linear"
-            ></a-ring>
-          </a-entity>
-
-          <!-- Interdimensional glitch core (C) -->
-          <a-entity
-            geometry="primitive: dodecahedron; radius: 0.25"
-            position="0 0 0.12"
-            material="wireframe:true; color:#00e5ff; emissive:#ff00c8; emissiveIntensity:0.9"
-            animation__spin="property: rotation; to: 360 360 0; loop:true; dur: 7000; easing: linear"
-            animation__jitter="property: scale; dir: alternate; dur: 220; easing: easeInOutSine; loop: true; to: 1.05 1.05 1.05"
-          ></a-entity>
-
-          <!-- Free-Bass logo plate -->
+          <!-- Small "gate key" plane at bottom -->
           <a-plane
-            src="freebass-logo.png"
-            position="0 -0.85 0"
-            rotation="-10 0 0"
-            width="1.6"
-            height="0.9"
-            material="transparent:true; alphaTest:0.1; emissive:#ffffff; emissiveIntensity:0.9"
-            animation="property: position; dir: alternate; dur: 1400; easing: easeInOutSine; loop: true; to: 0 -0.75 0"
-          ></a-plane>
-
+            position="0 -0.65 0"
+            rotation="-90 0 0"
+            width="0.9"
+            height="0.35"
+            color="#000000"
+            material="opacity: 0.8"
+          >
+            <a-text
+              value="TAP GATE TO ENTER TIMELINE"
+              align="center"
+              color="#ff2ad4"
+              width="1.8"
+              position="0 0.02 0.01"
+            ></a-text>
+          </a-plane>
         </a-entity>
-
-        <!-- HUD text anchored to marker as well -->
-        <a-entity
-          position="0 1.6 0"
-          text="value: FREE-BASS REALITY GATE 01; color: #00e5ff; align: center; width: 3"
-        ></a-entity>
-
-        <a-entity
-          position="0 0.15 0"
-          text="value: TAP KEY = ENTER ANOTHER TIMELINE; color: #ff00c8; align: center; width: 3.5"
-        ></a-entity>
-
       </a-marker>
 
-      <!-- Camera for marker tracking -->
-      <a-entity camera></a-entity>
-
+      <!-- Camera -->
+      <a-entity camera position="0 0 0"></a-entity>
     </a-scene>
 
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        var overlay = document.getElementById("overlay-text");
+        var scene = document.querySelector("a-scene");
+        var portal = document.querySelector("#portalRoot");
+        var marker = document.querySelector("#portalMarker");
 
-   <script>
-  window.addEventListener("DOMContentLoaded", function () {
-    var portal = document.querySelector("#portalRoot");
-    var marker = document.querySelector("#portalMarker");
+        // Hide overlay once scene has fully loaded
+        if (scene) {
+          scene.addEventListener("loaded", function () {
+            if (overlay) overlay.classList.add("hidden");
+          });
+        }
 
-    if (!portal) return;
+        if (!portal) return;
 
-    // Helper: play sound safely if the component exists
-    function playPortalSound() {
-      if (!portal.components || !portal.components.sound) return;
-      portal.components.sound.stopSound();
-      portal.components.sound.playSound();
-    }
+        function playPortalSound() {
+          if (!portal.components || !portal.components.sound) return;
+          portal.components.sound.stopSound();
+          portal.components.sound.playSound();
+        }
 
-    // Tapping the portal: zoom in + anime sound
-    portal.addEventListener("click", function () {
-      portal.emit("portalEnter");   // triggers the big scale animation
-      playPortalSound();
-    });
+        // Tap portal = anime sound + zoom-in animation
+        portal.addEventListener("click", function () {
+          portal.emit("portalEnter");
+          playPortalSound();
+        });
 
-    // Optional: when the marker is first found, give a little "ping"
-    if (marker) {
-      marker.addEventListener("markerFound", function () {
-        // mobile needs one user tap somewhere first to unlock audio
-        // so if this doesn't play at first, tap the screen once
-        playPortalSound();
+        // Small ping when marker found (after user has tapped once anywhere to unlock audio)
+        if (marker) {
+          marker.addEventListener("markerFound", function () {
+            playPortalSound();
+          });
+        }
+
+        // Reset scale after enter animation so you can tap again
+        portal.addEventListener("animationcomplete__enter", function () {
+          portal.setAttribute("scale", "1 1 1");
+        });
       });
-    }
-
-    // After the enter animation finishes, reset scale so you can do it again
-    portal.addEventListener("animationcomplete__enter", function () {
-      portal.setAttribute("scale", "1 1 1");
-    });
-  });
-</script>
-
-</script>
-
+    </script>
   </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
