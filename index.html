@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Free-Bass Reality Gate 01</title>
+  <title>Free-Bass Reality Gate – Minimal Test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
   <!-- A-Frame + AR.js -->
@@ -15,91 +15,47 @@
       padding: 0;
       overflow: hidden;
       background: #000;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: #00f5ff;
-    }
-
-    #hud {
-      position: fixed;
-      left: 50%;
-      bottom: 16px;
-      transform: translateX(-50%);
-      text-align: center;
-      z-index: 5;
-      pointer-events: none;
-    }
-
-    #status {
-      font-size: 14px;
-      padding: 4px 10px;
-      margin-bottom: 4px;
-      background: rgba(0, 0, 0, 0.75);
-      border-radius: 999px;
-    }
-
-    #hint {
-      font-size: 13px;
-      padding: 4px 10px;
-      background: rgba(0, 0, 0, 0.75);
-      border-radius: 999px;
-    }
-
-    .hidden {
-      display: none;
     }
   </style>
 </head>
 <body>
-  <!-- PORTAL SFX  (uses your exact filename) -->
-  <audio id="portal-sfx" src="Portal Sound.mp3" preload="auto"></audio>
-
-  <!-- HUD TEXT -->
-  <div id="hud">
-    <div id="status">Searching for Free-Bass Reality Gate…</div>
-    <div id="hint" class="hidden">
-      Aim at the Free-Bass marker. Tap the portal to enter.
-    </div>
-  </div>
-
-  <!-- AR SCENE -->
   <a-scene
     embedded
     vr-mode-ui="enabled: false"
     renderer="logarithmicDepthBuffer: true; antialias: true;"
     arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
   >
-    <!-- MARKER: matches your repo file EXACTLY -->
+    <!-- Marker MUST match your file name exactly -->
     <a-marker
-      id="freebass-marker"
       type="pattern"
       url="freebass-logo.patt"
-      emitevents="true"
     >
-      <!-- PORTAL GROUP (centered on marker) -->
-      <a-entity id="portal" position="0 0 0" scale="0 0 0">
+      <!-- Simple portal: 2 rings + core -->
+      <a-entity position="0 0 0">
+
         <!-- Outer ring -->
         <a-torus
           radius="0.6"
           radius-tubular="0.07"
           rotation="90 0 0"
-          material="color: #00f5ff; metalness: 0.6; roughness: 0.15"
+          material="color: #00f5ff; metalness: 0.6; roughness: 0.2"
         ></a-torus>
 
-        <!-- Mid ring -->
+        <!-- Inner ring -->
         <a-torus
-          radius="0.4"
+          radius="0.35"
           radius-tubular="0.06"
           rotation="90 0 0"
-          material="color: #ff00c8; metalness: 0.7; roughness: 0.2"
+          material="color: #ff00c8; metalness: 0.7; roughness: 0.25"
         ></a-torus>
 
-        <!-- Core -->
+        <!-- Core sphere -->
         <a-sphere
           radius="0.18"
-          material="color: #050510; emissive: #11ffee; emissiveIntensity: 0.8; metalness: 0.3; roughness: 0.4"
+          material="color: #050510; emissive: #11ffee; emissiveIntensity: 0.9;"
         ></a-sphere>
 
-        <!-- Slow constant spin -->
+        <!-- Slow spin for everything -->
         <a-animation
           attribute="rotation"
           dur="6000"
@@ -107,90 +63,11 @@
           easing="linear"
           repeat="indefinite"
         ></a-animation>
+
       </a-entity>
     </a-marker>
 
-    <!-- CAMERA WITH MOUSE/TAP CURSOR -->
-    <a-entity camera cursor="rayOrigin: mouse"></a-entity>
+    <a-entity camera></a-entity>
   </a-scene>
-
-  <script>
-    const marker = document.querySelector('#freebass-marker');
-    const portal = document.querySelector('#portal');
-    const statusEl = document.querySelector('#status');
-    const hintEl = document.querySelector('#hint');
-    const sfx = document.querySelector('#portal-sfx');
-
-    let audioPrimed = false;
-    let portalOpened = false;
-
-    // Prime audio on first tap anywhere (mobile autoplay rules)
-    document.body.addEventListener('click', () => {
-      if (audioPrimed) return;
-      sfx.play().then(() => {
-        sfx.pause();
-        sfx.currentTime = 0;
-        audioPrimed = true;
-      }).catch(() => {
-        // If blocked, it'll still work when user taps portal later
-      });
-    }, { once: true });
-
-    // When marker is found
-    marker.addEventListener('markerFound', () => {
-      statusEl.textContent = 'Free-Bass Reality Gate locked.';
-      hintEl.classList.remove('hidden');
-      hintEl.textContent = 'Aim at the Free-Bass marker. Tap the portal to enter.';
-      portalOpened = false;
-
-      // appear animation
-      portal.setAttribute('scale', '0 0 0');
-      portal.setAttribute('animation__appear', {
-        property: 'scale',
-        from: '0 0 0',
-        to: '0.9 0.9 0.9',
-        dur: 700,
-        easing: 'easeOutBack'
-      });
-    });
-
-    // When marker is lost
-    marker.addEventListener('markerLost', () => {
-      statusEl.textContent = 'Searching for Free-Bass Reality Gate…';
-      hintEl.classList.add('hidden');
-      portal.setAttribute('scale', '0 0 0');
-      portalOpened = false;
-    });
-
-    // Tap the portal to "enter"
-    portal.addEventListener('click', async () => {
-      if (portalOpened) return;
-      portalOpened = true;
-
-      hintEl.textContent = 'Timeline shift in progress…';
-
-      try {
-        sfx.currentTime = 0;
-        await sfx.play();
-      } catch (e) {
-        console.warn('Audio blocked:', e);
-      }
-
-      // quick zoom pulse
-      portal.setAttribute('animation__zoom', {
-        property: 'scale',
-        to: '1.6 1.6 1.6',
-        dur: 900,
-        dir: 'alternate',
-        easing: 'easeInOutQuad',
-        loop: 2
-      });
-
-      setTimeout(() => {
-        portal.setAttribute('scale', '1.2 1.2 1.2');
-        hintEl.textContent = 'Gate stabilized. Move around it to inspect the portal.';
-      }, 1900);
-    });
-  </script>
 </body>
 </html>
