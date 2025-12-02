@@ -72,7 +72,7 @@
     </div>
 
     <!-- Portal sound (optional). Put portal-sound.mp3 in same folder. -->
-    <audio id="portalSound" src="portal-sound.mp3" preload="auto"></audio>
+    <audio id="portalSound" src="freebass_clean.wav" preload="auto"></audio>
 
         <a-scene
       embedded
@@ -82,7 +82,16 @@
     >
 
       <!-- Marker that the portal is locked to -->
-      <a-marker type="pattern" url="freebass-logo.patt" id="portalMarker">
+    <a-marker
+  type="pattern"
+  url="freebass-logo.patt"
+  id="portalMarker"
+  smooth="true"
+  smoothCount="10"
+  smoothTolerance="0.01"
+  smoothThreshold="5"
+>
+
 
 
         <!-- === PORTAL ROOT (marker-relative) === -->
@@ -211,8 +220,33 @@
         if (e.target === tapOverlay) enterPortal();
       });
     </script>
+     <script>
+  window.addEventListener("DOMContentLoaded", function () {
+    // change this if your portal entity has a different id
+    var portal = document.querySelector("#portalRoot");
+
+    if (!portal || !portal.components.sound) return;
+
+    // mobile browsers require a user gesture, so we play on tap
+    portal.addEventListener("click", function () {
+      portal.components.sound.stopSound(); // restart from beginning
+      portal.components.sound.playSound();
+    });
+
+    // OPTIONAL: also play once when the marker is first found
+    var marker = document.querySelector("#portalMarker");
+    if (marker) {
+      marker.addEventListener("markerFound", function () {
+        // will only work after the first tap has "unlocked" audio on mobile
+        portal.components.sound.playSound();
+      });
+    }
+  });
+</script>
+
   </body>
 </html>
+
 
 
 
