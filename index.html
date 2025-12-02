@@ -14,9 +14,29 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background: #000;
+      background: transparent; /* let camera show through */
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: #0ff;
+    }
+
+    /* Force AR.js camera video to show full-screen */
+    .arjs-video {
+      position: fixed !important;
+      top: 0;
+      left: 0;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    /* Make sure the WebGL canvas fills the screen too */
+    a-scene {
+      position: fixed !important;
+      top: 0;
+      left: 0;
+      width: 100% !important;
+      height: 100% !important;
     }
 
     #hud {
@@ -68,14 +88,13 @@
   >
     <!-- MARKER: update url if your .patt has a different name -->
     <a-marker
-      id="fb-marker"
+      id="freebass-logo"
       type="pattern"
       url="freebass-logo.patt"
       emitevents="true"
     >
       <!-- PORTAL GROUP -->
       <a-entity id="portal" position="0 0 0" scale="0 0 0">
-
         <!-- Outer ring -->
         <a-torus
           radius="0.6"
@@ -133,7 +152,7 @@
           sfx.currentTime = 0;
           audioPrimed = true;
         }).catch(() => {
-          // ignore – some browsers will block until marker tap
+          // browser might block until marker tap – that's fine
         });
       },
       { once: true }
@@ -143,9 +162,9 @@
     marker.addEventListener('markerFound', () => {
       statusEl.textContent = 'Free-Bass Reality Gate locked.';
       hintEl.classList.remove('hidden');
+      hintEl.textContent = 'Aim at the Free-Bass marker. Tap the portal to enter.';
       portalOpened = false;
 
-      // Pop the portal in with a smooth ease-out
       portal.setAttribute('scale', '0 0 0');
       portal.setAttribute('animation__appear', {
         property: 'scale',
@@ -171,7 +190,6 @@
 
       hintEl.textContent = 'Timeline shift in progress…';
 
-      // Play SFX (anime-style whoosh you added as portal.mp3)
       try {
         sfx.currentTime = 0;
         await sfx.play();
@@ -179,7 +197,6 @@
         console.warn('Audio blocked by browser:', e);
       }
 
-      // Dramatic zoom-in pulse
       portal.setAttribute('animation__zoom', {
         property: 'scale',
         to: '1.6 1.6 1.6',
@@ -189,7 +206,6 @@
         loop: 2
       });
 
-      // After the pulse, hold a slightly larger size
       setTimeout(() => {
         portal.setAttribute('scale', '1.2 1.2 1.2');
         hintEl.textContent = 'Gate stabilized. Move around it to inspect the portal.';
