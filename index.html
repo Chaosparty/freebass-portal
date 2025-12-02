@@ -95,7 +95,15 @@
 
 
         <!-- === PORTAL ROOT (marker-relative) === -->
-        <a-entity id="portalRoot" position="0 0.6 0" scale="0.5 0.5 0.5">
+        <a-entity
+  id="portalRoot"
+  position="0 0 0"
+  sound="src: url(portal sound.mp3.wav); autoplay: false; loop: false"
+  animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"
+  animation__idlePulse="property: scale; dir: alternate; dur: 1500; easing: easeInOutSine; to: 1.05 1.05 1.05; loop: true"
+  animation__enter="property: scale; startEvents: portalEnter; from: 1 1 1; to: 5 5 5; dur: 1500; easing: easeInQuad"
+>
+
 
           <!-- Outer neon tech ring (A) -->
           <a-torus
@@ -193,59 +201,48 @@
 
     </a-scene>
 
-    </a-scene>
 
-    <script>
-      window.addEventListener("load", () => {
-        const loading = document.getElementById("loading");
-        setTimeout(() => {
-          loading.style.display = "none";
-        }, 2500);
-      });
-
-      const tapOverlay = document.getElementById("tapOverlay");
-      const enterBtn = document.getElementById("enterBtn");
-      const portalSound = document.getElementById("portalSound");
-
-      function enterPortal() {
-        tapOverlay.style.display = "none";
-        if (portalSound) {
-          portalSound.currentTime = 0;
-          portalSound.play().catch(() => {});
-        }
-      }
-
-      enterBtn.addEventListener("click", enterPortal);
-      tapOverlay.addEventListener("click", (e) => {
-        if (e.target === tapOverlay) enterPortal();
-      });
-    </script>
-     <script>
+   <script>
   window.addEventListener("DOMContentLoaded", function () {
-    // change this if your portal entity has a different id
     var portal = document.querySelector("#portalRoot");
+    var marker = document.querySelector("#portalMarker");
 
-    if (!portal || !portal.components.sound) return;
+    if (!portal) return;
 
-    // mobile browsers require a user gesture, so we play on tap
-    portal.addEventListener("click", function () {
-      portal.components.sound.stopSound(); // restart from beginning
+    // Helper: play sound safely if the component exists
+    function playPortalSound() {
+      if (!portal.components || !portal.components.sound) return;
+      portal.components.sound.stopSound();
       portal.components.sound.playSound();
+    }
+
+    // Tapping the portal: zoom in + anime sound
+    portal.addEventListener("click", function () {
+      portal.emit("portalEnter");   // triggers the big scale animation
+      playPortalSound();
     });
 
-    // OPTIONAL: also play once when the marker is first found
-    var marker = document.querySelector("#portalMarker");
+    // Optional: when the marker is first found, give a little "ping"
     if (marker) {
       marker.addEventListener("markerFound", function () {
-        // will only work after the first tap has "unlocked" audio on mobile
-        portal.components.sound.playSound();
+        // mobile needs one user tap somewhere first to unlock audio
+        // so if this doesn't play at first, tap the screen once
+        playPortalSound();
       });
     }
+
+    // After the enter animation finishes, reset scale so you can do it again
+    portal.addEventListener("animationcomplete__enter", function () {
+      portal.setAttribute("scale", "1 1 1");
+    });
   });
+</script>
+
 </script>
 
   </body>
 </html>
+
 
 
 
