@@ -83,22 +83,14 @@
       <!-- Camera -->
       <a-entity camera position="0 1.6 0"></a-entity>
 
-      <!-- === PORTAL ROOT === -->
-      <a-entity
-  position="0 2.5 -4"
-  text="value: FREE-BASS REALITY GATE 01; color: #00e5ff; align: center; width: 4"
-></a-entity>
-
-<a-entity
-  position="0 0.6 -4"
-  text="value: TAP KEY = ENTER ANOTHER TIMELINE; color: #ff00c8; align: center; width: 5"
-></a-entity>
-
+     
+       <!-- === PORTAL ROOT (smaller + centered) === -->
+      <a-entity id="portalRoot" position="0 1.3 -3.2" scale="0.4 0.4 0.4">
 
         <!-- Outer neon tech ring (A) -->
         <a-torus
-          radius="1.45"
-          radius-tubular="0.08"
+          radius="1.0"
+          radius-tubular="0.06"
           color="#00e5ff"
           material="emissive:#00e5ff; emissiveIntensity:0.9; metalness:0.6; roughness:0.1"
           animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear"
@@ -106,8 +98,8 @@
 
         <!-- Mid magenta ring (A/B) -->
         <a-torus
-          radius="1.1"
-          radius-tubular="0.06"
+          radius="0.75"
+          radius-tubular="0.05"
           color="#ff00c8"
           rotation="0 45 0"
           material="emissive:#ff00c8; emissiveIntensity:0.9; metalness:0.5; roughness:0.2"
@@ -116,35 +108,34 @@
 
         <!-- Inner sacred geometry disc (B) -->
         <a-circle
-          radius="0.9"
+          radius="0.6"
           color="#050011"
           material="shader: flat; opacity: 0.9"
           rotation="0 0 0"
         >
           <a-animation
-  attribute="material.opacity"
-  from="0.4"
-  to="0.95"
-  direction="alternate"
-  dur="1400"
-  repeat="indefinite"
-></a-animation>
-
+            attribute="material.opacity"
+            from="0.4"
+            to="0.95"
+            direction="alternate"
+            dur="1400"
+            repeat="indefinite"
+          ></a-animation>
         </a-circle>
 
         <!-- Spinning sacred-geo rings -->
         <a-entity rotation="0 0 0">
           <a-ring
-            radius-inner="0.45"
-            radius-outer="0.48"
+            radius-inner="0.3"
+            radius-outer="0.32"
             color="#00e5ff"
             position="0 0 0.02"
             material="emissive:#00e5ff; emissiveIntensity:1.0"
             animation="property: rotation; to: 0 0 360; loop: true; dur: 5000; easing: linear"
           ></a-ring>
           <a-ring
-            radius-inner="0.18"
-            radius-outer="0.2"
+            radius-inner="0.14"
+            radius-outer="0.16"
             color="#ff00c8"
             position="0 0 0.03"
             material="emissive:#ff00c8; emissiveIntensity:1.0"
@@ -154,27 +145,25 @@
 
         <!-- Interdimensional glitch core (C) -->
         <a-entity
-          geometry="primitive: dodecahedron; radius: 0.35"
-          position="0 0 0.15"
+          geometry="primitive: dodecahedron; radius: 0.25"
+          position="0 0 0.12"
           material="wireframe:true; color:#00e5ff; emissive:#ff00c8; emissiveIntensity:0.9"
           animation__spin="property: rotation; to: 360 360 0; loop:true; dur: 7000; easing: linear"
           animation__jitter="property: scale; dir: alternate; dur: 220; easing: easeInOutSine; loop: true; to: 1.05 1.05 1.05"
         ></a-entity>
 
         <!-- Free-Bass logo plate -->
-        <!-- Put freebass-logo.png in same folder -->
         <a-plane
           src="freebass-logo.png"
-          position="0 -1.25 0"
+          position="0 -0.85 0"
           rotation="-10 0 0"
-          width="2.2"
-          height="1.2"
+          width="1.6"
+          height="0.9"
           material="transparent:true; alphaTest:0.1; emissive:#ffffff; emissiveIntensity:0.9"
-          animation="property: position; dir: alternate; dur: 1400; easing: easeInOutSine; loop: true; to: 0 -1.1 0"
+          animation="property: position; dir: alternate; dur: 1400; easing: easeInOutSine; loop: true; to: 0 -0.75 0"
         ></a-plane>
 
       </a-entity>
-
       <!-- Ground grid for depth -->
       <a-entity position="0 0 -3">
         <a-plane
@@ -188,13 +177,13 @@
 
       <!-- HUD text above -->
       <a-entity
-        position="0 2.5 -4"
+        position="0 2.4 -3.2"
         text="value: FREE-BASS REALITY GATE 01; color: #00e5ff; align: center; width: 4"
       ></a-entity>
 
       <!-- HUD text below -->
       <a-entity
-        position="0 0.6 -4"
+        position="0 0.4 -3.2"
         text="value: TAP KEY = ENTER ANOTHER TIMELINE; color: #ff00c8; align: center; width: 5"
       ></a-entity>
     </a-scene>
@@ -226,6 +215,7 @@
     </script>
   </body>
 </html>
+
 
 
 
