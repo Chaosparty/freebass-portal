@@ -8,14 +8,16 @@
     <!-- A-Frame + AR.js -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.3.2/aframe/build/aframe-ar.js"></script>
+    <!-- Make portal always face the camera -->
+    <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
 
     <style>
       body {
         margin: 0;
         overflow: hidden;
         background: #000;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont,
-          "Segoe UI", sans-serif;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
       }
       #hint {
         position: fixed;
@@ -35,7 +37,7 @@
   </head>
 
   <body>
-    <div id="hint">Point at the Free-Bass logo · Tap the portal</div>
+    <div id="hint">Point at the Free-Bass marker · Tap the portal</div>
 
     <a-scene
       embedded
@@ -45,11 +47,15 @@
     >
       <!-- Assets -->
       <a-assets>
-        <!-- your anime-style portal SFX -->
-        <audio id="portal-sfx" src="freebass_clean.wav" preload="auto"></audio>
+        <!-- Put your anime-style SFX in this file: portal-sfx.mp3 -->
+        <audio
+          id="portal sound"
+          src="portal sound.mp3"
+          preload="auto"
+        ></audio>
       </a-assets>
 
-      <!-- Marker that uses freebass-logo.patt -->
+      <!-- Marker using your pattern file -->
       <a-marker
         id="portalMarker"
         type="pattern"
@@ -59,97 +65,69 @@
         smoothTolerance="0.01"
         smoothThreshold="5"
       >
-        <!-- PORTAL ROOT -->
+        <!-- PORTAL ROOT (always faces camera) -->
         <a-entity
           id="portalRoot"
           class="clickable"
-          position="0 0.45 0"
-          scale="1.7 1.7 1.7"
+          position="0 0.5 0"
+          scale="1.6 1.6 1.6"
+          look-at="[camera]"
         >
-          <!-- OUTER CYAN RING -->
+          <!-- Outer cyan ring -->
           <a-entity
-            geometry="primitive: torus; radius: 0.6; radiusTubular: 0.11; segmentsRadial: 24; segmentsTubular: 36"
-            material="color: #00eaff; emissive: #00eaff; emissiveIntensity: 0.85; metalness: 0.4; roughness: 0.1"
+            geometry="primitive: ring; radiusInner: 0.55; radiusOuter: 0.8; segmentsTheta: 64"
+            material="color: #00eaff; emissive: #00eaff; emissiveIntensity: 0.9; metalness: 0.3; roughness: 0.2"
             rotation="0 0 0"
-            animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear"
+            animation="property: rotation; to: 0 0 360; loop: true; dur: 4500; easing: linear"
           ></a-entity>
 
-          <!-- INNER MAGENTA RING -->
+          <!-- Inner magenta ring -->
           <a-entity
-            geometry="primitive: torus; radius: 0.42; radiusTubular: 0.09; segmentsRadial: 24; segmentsTubular: 36"
-            material="color: #ff2ad4; emissive: #ff2ad4; emissiveIntensity: 0.85; metalness: 0.4; roughness: 0.15"
+            geometry="primitive: ring; radiusInner: 0.35; radiusOuter: 0.55; segmentsTheta: 64"
+            material="color: #ff2ad4; emissive: #ff2ad4; emissiveIntensity: 0.9; metalness: 0.3; roughness: 0.25"
             rotation="0 0 0"
-            animation="property: rotation; to: 0 -360 0; loop: true; dur: 4000; easing: linear"
+            animation="property: rotation; to: 0 0 -360; loop: true; dur: 3500; easing: linear"
           ></a-entity>
 
-          <!-- DARK PORTAL DISC -->
-          <a-cylinder
-            radius="0.5"
-            height="0.02"
-            position="0 0 0"
-            rotation="90 0 0"
+          <!-- Dark portal disc -->
+          <a-entity
+            geometry="primitive: circle; radius: 0.35; segments: 48"
             material="color: #050510; metalness: 0.5; roughness: 0.2; opacity: 0.98"
-          ></a-cylinder>
+          ></a-entity>
 
-          <!-- SOFT GLOW -->
-          <a-cylinder
-            radius="0.46"
-            height="0.01"
-            position="0 0 0.01"
-            rotation="90 0 0"
+          <!-- Soft glow halo -->
+          <a-entity
+            geometry="primitive: circle; radius: 0.5; segments: 48"
             material="color: #88f5ff; emissive: #88f5ff; emissiveIntensity: 0.5; transparent: true; opacity: 0.35"
-          ></a-cylinder>
+          ></a-entity>
 
-          <!-- CENTER ORB -->
+          <!-- Core orb -->
           <a-sphere
             id="portalCore"
-            position="0 0 0.12"
-            radius="0.14"
+            position="0 0 0.05"
+            radius="0.18"
             color="#ffffff"
-            material="emissive: #ffffff; emissiveIntensity: 0.9; opacity: 0.95; transparent: true"
-            animation__pulse="property: scale; from: 1 1 1; to: 1.7 1.7 1.7; dir: alternate; loop: true; dur: 900; easing: easeInOutSine"
+            material="emissive: #ffffff; emissiveIntensity: 1; transparent: true; opacity: 0.95"
+            animation__pulse="property: scale; from: 1 1 1; to: 1.6 1.6 1.6; dir: alternate; loop: true; dur: 900; easing: easeInOutSine"
           ></a-sphere>
-
-          <!-- subtle breathing of the whole gate -->
-          <a-animation
-            attribute="scale"
-            from="1.7 1.7 1.7"
-            to="1.9 1.9 1.9"
-            direction="alternate"
-            dur="2600"
-            repeat="indefinite"
-            easing="easeInOutSine"
-          ></a-animation>
         </a-entity>
-
-        <!-- LABEL BELOW PORTAL -->
-        <a-plane
-          position="0 -0.9 0"
-          rotation="0 0 0"
-          width="1.9"
-          height="0.5"
-          color="#000000"
-          material="opacity: 0.7; transparent: true"
-        >
-          <a-text
-            value="FREE-BASS REALITY GATE 01\nTAP PORTAL TO ENTER"
-            align="center"
-            color="#00eaff"
-            width="3"
-            position="0 0 0.01"
-          ></a-text>
-        </a-plane>
       </a-marker>
 
-      <!-- Camera + mouse cursor (taps = clicks) -->
-      <a-entity camera cursor="rayOrigin: mouse"></a-entity>
+      <!-- Camera + cursor (touch = click) -->
+      <a-entity
+        id="camera"
+        camera
+        look-controls
+        cursor="rayOrigin: mouse"
+        raycaster="objects: .clickable"
+      ></a-entity>
     </a-scene>
 
     <script>
-      window.addEventListener("load", function () {
+      window.addEventListener("DOMContentLoaded", function () {
         var portal = document.querySelector("#portalRoot");
-        var audio  = document.querySelector("#portal-sfx");
-        var hint   = document.querySelector("#hint");
+        var audio = document.querySelector("#portal-sfx");
+        var hint = document.querySelector("#hint");
         var marker = document.querySelector("#portalMarker");
 
         if (marker && hint) {
@@ -161,26 +139,25 @@
           });
         }
 
-        if (!portal || !audio) return;
+        if (!portal) return;
 
+        // Tap / click portal
         portal.addEventListener("click", function () {
-          // play SFX on tap (mobile browsers only allow after user interaction)
-          try {
-            audio.currentTime = 0;
-            audio.play();
-          } catch (e) {
-            console.log("Audio blocked:", e);
+          // Play SFX (will work after first user interaction)
+          if (audio) {
+            try {
+              audio.currentTime = 0;
+              audio.play();
+            } catch (e) {
+              console.log("Audio blocked:", e);
+            }
           }
 
-          // anime-style zoom in then back out
-          portal.setAttribute("animation__tap", {
-            property: "scale",
-            from: "1.9 1.9 1.9",
-            to: "2.5 2.5 2.5",
-            dir: "alternate",
-            dur: 650,
-            easing: "easeInQuad"
-          });
+          // Anime-style zoom in/out
+          portal.setAttribute(
+            "animation__tap",
+            "property: scale; from: 1.6 1.6 1.6; to: 2.3 2.3 2.3; dir: alternate; dur: 600; easing: easeOutCubic"
+          );
         });
       });
     </script>
