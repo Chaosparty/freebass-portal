@@ -3,10 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <title>Free-Bass Reality Gate 01</title>
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 
     <!-- A-Frame + AR.js -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
@@ -17,10 +14,9 @@
         margin: 0;
         overflow: hidden;
         background: #000;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
       }
-
       #hint {
         position: fixed;
         left: 50%;
@@ -41,162 +37,151 @@
   <body>
     <div id="hint">Point at the Free-Bass logo · Tap the portal</div>
 
-    <!-- SCENE -->
     <a-scene
       embedded
       vr-mode-ui="enabled: false"
       renderer="logarithmicDepthBuffer: true; antialias: true"
       arjs="sourceType: webcam; debugUIEnabled: false;"
     >
-      <!-- Assets: AUDIO -->
+      <!-- Assets -->
       <a-assets>
-        <!-- This should be the same file already in your repo -->
-        <audio
-          id="portal-sfx"
-          src="portal sound.mp3"
-          preload="auto"
-        ></audio>
+        <!-- your anime-style portal SFX -->
+        <audio id="portal-sfx" src="freebass_clean.wav" preload="auto"></audio>
       </a-assets>
 
-      <!-- Marker (your .patt file) -->
+      <!-- Marker that uses freebass-logo.patt -->
       <a-marker
+        id="portalMarker"
         type="pattern"
         url="freebass-logo.patt"
-        id="portalMarker"
         smooth="true"
         smoothCount="10"
         smoothTolerance="0.01"
         smoothThreshold="5"
       >
-        <!-- PORTAL ROOT (nice and big, floating above marker) -->
+        <!-- PORTAL ROOT -->
         <a-entity
           id="portalRoot"
           class="clickable"
-          position="0 0.6 0"
-          scale="0.8 0.8 0.8"
+          position="0 0.45 0"
+          scale="1.7 1.7 1.7"
         >
-          <!-- Outer cyan ring -->
-          <a-ring
-            radius-inner="0.7"
-            radius-outer="0.95"
-            position="0 0 0"
-            rotation="0 0 0"
-            color="#00eaff"
-            material="emissive: #00eaff; emissiveIntensity: 1; opacity: 0.9; transparent: true; roughness: 0.1; metalness: 0.4"
-            animation="property: rotation; to: 0 0 360; loop: true; dur: 5500; easing: linear"
-          ></a-ring>
-
-          <!-- Inner magenta ring -->
-          <a-ring
-            radius-inner="0.45"
-            radius-outer="0.7"
-            position="0 0 0.01"
-            rotation="0 0 0"
-            color="#ff2ad4"
-            material="emissive: #ff2ad4; emissiveIntensity: 0.9; opacity: 0.9; transparent: true; roughness: 0.2"
-            animation="property: rotation; to: 0 0 -360; loop: true; dur: 4500; easing: linear"
-          ></a-ring>
-
-          <!-- Dark portal disc behind everything -->
-          <a-circle
-            radius="0.95"
-            position="0 0 -0.01"
-            color="#050510"
-            material="opacity: 0.98; metalness: 0.4; roughness: 0.15"
-          ></a-circle>
-
-          <!-- Soft glow circle -->
-          <a-circle
-            radius="0.8"
-            position="0 0 0.02"
-            color="#88f5ff"
-            material="emissive: #88f5ff; emissiveIntensity: 0.4; opacity: 0.25; transparent: true"
-          ></a-circle>
-
-          <!-- Center orb (smaller, no giant white blob) -->
-          <a-sphere
-            id="portalCore"
-            position="0 0 0.06"
-            radius="0.18"
-            color="#ffffff"
-            material="emissive: #ffffff; emissiveIntensity: 0.9; opacity: 0.95; transparent: true"
-            animation__pulse="
-              property: scale;
-              from: 1 1 1;
-              to: 1.5 1.5 1.5;
-              dir: alternate;
-              loop: true;
-              dur: 900;
-              easing: easeInOutSine"
-          ></a-sphere>
-
-          <!-- Starburst lines for extra anime juice -->
+          <!-- OUTER CYAN RING -->
           <a-entity
-            geometry="primitive: circle; radius: 0.9; segments: 16"
-            material="color: #00ffff; shader: flat; opacity: 0.14; transparent: true"
+            geometry="primitive: torus; radius: 0.6; radiusTubular: 0.11; segmentsRadial: 24; segmentsTubular: 36"
+            material="color: #00eaff; emissive: #00eaff; emissiveIntensity: 0.85; metalness: 0.4; roughness: 0.1"
             rotation="0 0 0"
-            animation="property: rotation; to: 0 0 360; loop: true; dur: 9000; easing: linear"
+            animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear"
           ></a-entity>
 
-          <!-- Label under portal -->
-          <a-plane
-            position="0 -1.2 0"
-            rotation="-90 0 0"
-            width="2.1"
-            height="0.55"
-            color="#000000"
-            material="opacity: 0.75; transparent: true"
-          >
-            <a-text
-              value="FREE-BASS REALITY GATE 01\nTAP PORTAL TO ENTER"
-              align="center"
-              color="#00eaff"
-              width="3"
-              position="0 0 0.01"
-            ></a-text>
-          </a-plane>
+          <!-- INNER MAGENTA RING -->
+          <a-entity
+            geometry="primitive: torus; radius: 0.42; radiusTubular: 0.09; segmentsRadial: 24; segmentsTubular: 36"
+            material="color: #ff2ad4; emissive: #ff2ad4; emissiveIntensity: 0.85; metalness: 0.4; roughness: 0.15"
+            rotation="0 0 0"
+            animation="property: rotation; to: 0 -360 0; loop: true; dur: 4000; easing: linear"
+          ></a-entity>
+
+          <!-- DARK PORTAL DISC -->
+          <a-cylinder
+            radius="0.5"
+            height="0.02"
+            position="0 0 0"
+            rotation="90 0 0"
+            material="color: #050510; metalness: 0.5; roughness: 0.2; opacity: 0.98"
+          ></a-cylinder>
+
+          <!-- SOFT GLOW -->
+          <a-cylinder
+            radius="0.46"
+            height="0.01"
+            position="0 0 0.01"
+            rotation="90 0 0"
+            material="color: #88f5ff; emissive: #88f5ff; emissiveIntensity: 0.5; transparent: true; opacity: 0.35"
+          ></a-cylinder>
+
+          <!-- CENTER ORB -->
+          <a-sphere
+            id="portalCore"
+            position="0 0 0.12"
+            radius="0.14"
+            color="#ffffff"
+            material="emissive: #ffffff; emissiveIntensity: 0.9; opacity: 0.95; transparent: true"
+            animation__pulse="property: scale; from: 1 1 1; to: 1.7 1.7 1.7; dir: alternate; loop: true; dur: 900; easing: easeInOutSine"
+          ></a-sphere>
+
+          <!-- subtle breathing of the whole gate -->
+          <a-animation
+            attribute="scale"
+            from="1.7 1.7 1.7"
+            to="1.9 1.9 1.9"
+            direction="alternate"
+            dur="2600"
+            repeat="indefinite"
+            easing="easeInOutSine"
+          ></a-animation>
         </a-entity>
+
+        <!-- LABEL BELOW PORTAL -->
+        <a-plane
+          position="0 -0.9 0"
+          rotation="0 0 0"
+          width="1.9"
+          height="0.5"
+          color="#000000"
+          material="opacity: 0.7; transparent: true"
+        >
+          <a-text
+            value="FREE-BASS REALITY GATE 01\nTAP PORTAL TO ENTER"
+            align="center"
+            color="#00eaff"
+            width="3"
+            position="0 0 0.01"
+          ></a-text>
+        </a-plane>
       </a-marker>
 
-      <!-- Camera + cursor so taps work -->
+      <!-- Camera + mouse cursor (taps = clicks) -->
       <a-entity camera cursor="rayOrigin: mouse"></a-entity>
     </a-scene>
 
     <script>
-      // Tap portal => play SFX + quick zoom
       window.addEventListener("load", function () {
         var portal = document.querySelector("#portalRoot");
-        var audio = document.querySelector("#portal-sfx");
+        var audio  = document.querySelector("#portal-sfx");
+        var hint   = document.querySelector("#hint");
+        var marker = document.querySelector("#portalMarker");
+
+        if (marker && hint) {
+          marker.addEventListener("markerFound", function () {
+            hint.style.display = "none";
+          });
+          marker.addEventListener("markerLost", function () {
+            hint.style.display = "block";
+          });
+        }
 
         if (!portal || !audio) return;
 
         portal.addEventListener("click", function () {
+          // play SFX on tap (mobile browsers only allow after user interaction)
           try {
             audio.currentTime = 0;
             audio.play();
           } catch (e) {
-            console.log("Audio play blocked:", e);
+            console.log("Audio blocked:", e);
           }
 
-          // anime-style zoom in/out
+          // anime-style zoom in then back out
           portal.setAttribute("animation__tap", {
             property: "scale",
-            from: "0.8 0.8 0.8",
-            to: "1.4 1.4 1.4",
+            from: "1.9 1.9 1.9",
+            to: "2.5 2.5 2.5",
             dir: "alternate",
             dur: 650,
             easing: "easeInQuad"
           });
         });
-
-        // hide hint after first marker lock
-        var marker = document.querySelector("#portalMarker");
-        var hint = document.querySelector("#hint");
-        if (marker && hint) {
-          marker.addEventListener("markerFound", function () {
-            hint.style.display = "none";
-          });
-        }
       });
     </script>
   </body>
